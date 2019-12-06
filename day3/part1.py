@@ -3,7 +3,52 @@ wire2_input = 'L1000,U720,R111,D390,L400,U931,R961,D366,L172,D434,R514,D185,L555
 
 
 def main():
-    pass
+    grid = {}
+    wires = [
+        ('red', wire1_input.split(',')),
+        ('blue', wire2_input.split(',')),
+    ]
+
+    for name, moves in wires:
+        x, y = 0, 0
+
+        # R, L - x; U,D - y
+        for move in moves:
+            direction, length = move[0], int(move[1:])
+
+            if direction is 'R':
+                for i in range(0, length):
+                    x += 1
+                    grid.setdefault((x, y), []).append(name)
+
+            if direction is 'L':
+                for i in range(0, length):
+                    x -= 1
+                    grid.setdefault((x, y), []).append(name)
+
+            if direction is 'U':
+                for i in range(0, length):
+                    y += 1
+                    grid.setdefault((x, y), []).append(name)
+
+            if direction is 'D':
+                for i in range(0, length):
+                    y -= 1
+                    grid.setdefault((x, y), []).append(name)
+
+    intersections = []
+
+    for point, wires in grid.items():
+        if 'red' in wires and 'blue' in wires:
+            intersections.append(point)
+
+    print('Intersections: {}'.format(intersections))
+
+    closest = min(intersections, key=lambda point: abs(point[0]) + abs(point[1]))
+    distance = abs(closest[0]) + abs(closest[1])
+
+    print('The closest to the port: {}'.format(closest))
+    print('Manhattan distance: {}'.format(distance))
 
 
 if __name__ == '__main__':
